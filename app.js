@@ -5353,7 +5353,7 @@ var $author$project$PhotoGroove$view = function (model) {
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('Photo Grove')
+						$elm$html$Html$text('Photo Groove')
 					])),
 				A2(
 				$elm$html$Html$button,

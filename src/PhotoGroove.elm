@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick)
 import Array exposing (Array)
+import Random
 
 
 urlPrefix : String
@@ -12,25 +13,17 @@ urlPrefix =
   "http://elm-in-action.com/"
 
 
-type ThumbnailSize
-  = Small
-  | Medium
-  | Large
-
-chosenSize : ThumbnailSize
-chosenSize = Small
-
-
 type Msg 
   = ClickedPhoto String
   | ClickedSize ThumbnailSize
   | ClickedSurpriseMe
+  | GotSelectedIndex Int
 
 
 view : Model -> Html Msg
 view model =
   div [ class "content" ]
-    [ h1 [] [text "Photo Grove"] 
+    [ h1 [] [text "Photo Groove"] 
     , button 
       [ onClick ClickedSurpriseMe ]
       [ text "Surprise Me!"]
@@ -77,7 +70,12 @@ sizeToString size =
     
     Large ->
       "large"
-  
+
+
+type ThumbnailSize
+  = Small
+  | Medium
+  | Large
 
 type alias Photo =
   { url : String }
@@ -87,6 +85,7 @@ type alias Model =
   , selectedUrl : String 
   , chosenSize: ThumbnailSize
   }
+
 
 initialModel : Model
 initialModel = 
@@ -115,22 +114,33 @@ getPhotoUrl index =
         ""
 
 
+randomPhotoPicker : Random.Generator Int
+randomPhotoPicker =
+  Random.int 0 (Array.length photoArray - 1)
+
+
+update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
+    GotSelectedIndex ->
+      ( { model | selectedUrl = getPhotoUrl index }, Cmd.none )
+
     ClickedPhoto url ->
-      { model | selectedUrl = url}
+      ({ model | selectedUrl = url}, Cmd.none)
 
     ClickedSize size ->
-      { model | chosenSize = size }
+      ({ model | chosenSize = size }, Cmd.none)
 
     ClickedSurpriseMe ->
-      { model | selectedUrl = "2.jpeg"}
+      (model,  Random.generate GotSelectedIndex randomPhotoPicker)
 
 
 
+main : Program () Model Msg
 main = 
-  Browser.sandbox
-    { init = initialModel
-    , view = view
-    , update = update
-    }
+  Browser.element
+  { init = \flags -> (initialModel, Cmd.none)
+  , view = view
+  , update = update
+  , subscriptions = \model -> Sub.none
+  }
