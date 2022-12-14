@@ -122,7 +122,7 @@ randomPhotoPicker =
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
-    GotSelectedIndex ->
+    GotSelectedIndex index ->
       ( { model | selectedUrl = getPhotoUrl index }, Cmd.none )
 
     ClickedPhoto url ->
