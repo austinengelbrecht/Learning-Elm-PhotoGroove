@@ -33,8 +33,6 @@ viewThumbnail selectedUrl thumb =
       []
   
 
-
-
 initialModel = 
   { photos =
     [ { url = "1.jpeg" } 
@@ -43,7 +41,6 @@ initialModel =
     ]
     , selectedUrl = "1.jpeg"
   }
-
 
 
 update msg model =
