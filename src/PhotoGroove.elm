@@ -135,10 +135,9 @@ update msg model =
     ClickedSurpriseMe ->
       case model.status of 
         Loaded (firstPhoto :: otherPhotos) _ ->
-          ( model 
-          , Random.generate GotRandomPhoto
-            (Random.uniform firstPhoto otherPhotos)
-          )
+          Random.uniform firstPhoto otherPhotos
+            |> Random.generate GotRandomPhoto
+            |> Tuple.pair model
 
         Loaded [] _ ->
           ( model, Cmd.none)
