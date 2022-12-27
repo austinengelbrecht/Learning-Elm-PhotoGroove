@@ -102,8 +102,8 @@ type Status
   | Errored String
 
 type alias Model =
-  { status: Status
-  , chosenSize: ThumbnailSize
+  { status : Status
+  , chosenSize : ThumbnailSize
   }
 
 
