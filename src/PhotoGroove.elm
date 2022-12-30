@@ -2,11 +2,13 @@ module PhotoGroove exposing (main)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes exposing (class, classList, id, name, src, title, type_)
 import Html.Events exposing (onClick)
 import Array exposing (Array)
 import Random
 import Http
+import Json.Decode exposing (Decoder, int, list, string, succeed)
+import Json.Decode.Pipeline exposing (optional, required)
 
 
 urlPrefix : String
@@ -19,7 +21,7 @@ type Msg
   | ClickedSize ThumbnailSize
   | ClickedSurpriseMe
   | GotRandomPhoto Photo
-  | GotPhotos (Result Http.Error String)
+  | GotPhotos (Result Http.Error (List Photo))
 
 
 
@@ -61,8 +63,9 @@ viewLoaded photos selectedUrl chosenSize =
 viewThumbnail : String -> Photo -> Html Msg
 viewThumbnail selectedUrl thumb =
     img 
-      [ src (urlPrefix ++ thumb.url) 
-      , classList [ ( "selected", selectedUrl == thumb.url ) ]
+      [ src (urlPrefix ++ thumb.url)
+      , title (thumb.title ++ " [" ++ String.fromInt thumb.size ++ " KB] ") 
+      , classList [ ( "selected", selectedUrl == Just thumb.url ) ]
       , onClick (ClickedPhoto thumb.url)
       ] 
       []
@@ -95,7 +98,19 @@ type ThumbnailSize
   | Large
 
 type alias Photo =
-  { url : String }
+  { url : String 
+  , size : Int 
+  , title : String 
+  }
+
+
+photoDecoder : Decoder Photo
+photoDecoder = 
+  succeed Photo
+    |> required "url" string
+    |> required "size" int
+    |> optional "title" string "(untitled)"
+
 
 
 type Status
@@ -119,8 +134,8 @@ initialModel =
 initialCmd : Cmd Msg
 initialCmd =
   Http.get 
-    { url = "http://elm-in-action.com/photos/list"
-    , expect = Http.expectString GotPhotos 
+    { url = "http://elm-in-action.com/photos/list.json"
+    , expect = Http.expectJson GotPhotos (list photoDecoder)
     }
 
 
@@ -156,15 +171,12 @@ update msg model =
         Errored errorMessage ->
           ( model, Cmd.none )  
   
-    GotPhotos (Ok responseStr) ->
-      case String.split "," responseStr of
-        (firstUrl :: _) as urls ->
-          let
-            photos =
-              List.map (\url -> {url = url }) urls
-          
-          in
-          ( { model | status = Loaded photos firstUrl}, Cmd.none )
+    GotPhotos (Ok photos) ->
+      case photos of
+        firstUrl :: rest ->
+          ( { model | status = Loaded photos first.url }
+          , Cmd.none
+          )
       
         [] ->
           ( { model | status = Errored "0 photos found" }, Cmd.none)
