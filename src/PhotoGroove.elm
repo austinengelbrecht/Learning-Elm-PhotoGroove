@@ -7,6 +7,7 @@ import Html.Events exposing (onClick)
 import Array exposing (Array)
 import Random
 import Http
+import Json.Encode
 import Json.Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 
@@ -200,3 +201,21 @@ main =
   , update = update
   , subscriptions = \_ -> Sub.none
   }
+
+
+rangeSlider : String -> Int -> Html Msg
+rangeSlider attibutes children =
+    node "range-slider" attibutes children
+
+
+viewFilter : String -> Int -> Html Msg
+viewFilter name magnitude = 
+  div [ class "filter-slider" ]
+    [ label [] [ text name ]
+    , rangeSlider
+      [ max "11"
+      , Html.Attributes.property "val" (Json.Encode.int magnitude)
+      ]
+      []
+    , label [] [ text (String.fromInt magnitude) ] 
+    ]
