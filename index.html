@@ -52,6 +52,15 @@
             sliders: 1,
             grid: false,
           });
+
+          let rangeSliderNode = this;
+          jsr.addEventListener("update", function (elem, value) {
+            let event = new CustomEvent("slide", {
+              detail: { userSlidTo: value },
+            });
+
+            rangeSliderNode.dispatchEvent(event);
+          });
         }
       }
       window.customElements.define("range-slider", RangeSlider);
