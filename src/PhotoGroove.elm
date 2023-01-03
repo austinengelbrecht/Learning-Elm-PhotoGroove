@@ -2,12 +2,12 @@ module PhotoGroove exposing (main)
 
 import Browser
 import Html exposing (..)
-import Html.Attributes exposing (class, classList, id, name, src, title, type_)
+import Html.Attributes as Attr exposing (class, classList, id, name, src, title, type_)
 import Html.Events exposing (onClick)
 import Array exposing (Array)
 import Random
 import Http
-import Json.Encode
+import Json.Encode as Encode
 import Json.Decode exposing (Decoder, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 
@@ -203,7 +203,7 @@ main =
   }
 
 
-rangeSlider : String -> Int -> Html Msg
+rangeSlider : List (Attribute msg) -> List (Html msg) -> Html msg
 rangeSlider attibutes children =
     node "range-slider" attibutes children
 
@@ -213,8 +213,8 @@ viewFilter name magnitude =
   div [ class "filter-slider" ]
     [ label [] [ text name ]
     , rangeSlider
-      [ max "11"
-      , Html.Attributes.property "val" (Json.Encode.int magnitude)
+      [ Attr.max "11"
+      , Attr.property "val" (Encode.int magnitude)
       ]
       []
     , label [] [ text (String.fromInt magnitude) ] 
