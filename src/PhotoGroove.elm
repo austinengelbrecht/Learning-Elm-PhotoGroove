@@ -26,6 +26,7 @@ type Msg
   | SlidHue Int
   | SlidRipple Int
   | SlidNoise Int
+  | GotActivity String
 
 
 
@@ -50,6 +51,7 @@ viewLoaded photos selectedUrl model =
   , button 
     [ onClick ClickedSurpriseMe ]
     [ text "Surprise Me!"]
+  , div [ class "activity" ] [ text model.activity]
   , div [ class "filters" ]
     [ viewFilter SlidHue "Hue" model.hue
     , viewFilter SlidRipple "Ripple" model.ripple 
@@ -105,6 +107,8 @@ type ThumbnailSize
 
 port setFilters : FilterOptions -> Cmd msg
 
+port activityChanges : (String -> msg) -> Sub msg
+
 type alias FilterOptions = 
   { url : String
   , filters: List { name : String, amount : Float }
@@ -137,6 +141,7 @@ type alias Model =
   , hue : Int
   , ripple : Int
   , noise : Int 
+  , activity : String
   }
 
 
@@ -147,6 +152,7 @@ initialModel =
   , hue = 5
   , ripple = 5
   , noise = 5
+  , activity = ""
   }
 
 
@@ -207,6 +213,9 @@ update msg model =
     GotPhotos (Err _) ->
       ( { model | status = Errored "Server error!" }, Cmd.none )
 
+    GotActivity activity -> 
+      ( { model | activity = activity }, Cmd.none )
+
 
 applyFilters : Model -> ( Model, Cmd Msg )
 applyFilters model = 
@@ -253,14 +262,29 @@ initialCmd =
     }
 
 
-main : Program () Model Msg
+main : Program Float Model Msg
 main = 
   Browser.element
-  { init = \_ -> (initialModel, initialCmd)
+  { init = init
   , view = view
   , update = update
-  , subscriptions = \_ -> Sub.none
+  , subscriptions = subscriptions
   }
+
+
+init : Float -> (Model, Cmd Msg)
+init flags =
+  let
+    activity =
+      "Initializing Pasta v" ++ String.fromFloat flags    
+  
+  in
+    ( { initialModel | activity = activity }, initialCmd )
+  
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    activityChanges GotActivity
 
 
 rangeSlider : List (Attribute msg) -> List (Html msg) -> Html msg
