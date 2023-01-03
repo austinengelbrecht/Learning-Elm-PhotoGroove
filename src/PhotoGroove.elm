@@ -3,12 +3,12 @@ module PhotoGroove exposing (main)
 import Browser
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class, classList, id, name, src, title, type_)
-import Html.Events exposing (onClick)
+import Html.Events exposing (onClick, on)
 import Array exposing (Array)
 import Random
 import Http
 import Json.Encode as Encode
-import Json.Decode exposing (Decoder, int, list, string, succeed)
+import Json.Decode exposing (Decoder, at, int, list, string, succeed)
 import Json.Decode.Pipeline exposing (optional, required)
 
 
@@ -224,3 +224,10 @@ viewFilter name magnitude =
       []
     , label [] [ text (String.fromInt magnitude) ] 
     ]
+
+
+onSlide: (Int -> msg) -> Attribute msg
+onSlide toMsg = 
+  at ["detail", "userSlidTo" ] int
+    |> Json.Decode.map toMsg 
+    |> on "slide"
