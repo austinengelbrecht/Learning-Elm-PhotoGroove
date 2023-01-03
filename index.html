@@ -42,6 +42,7 @@
       class RangeSlider extends HTMLElement {
         connectedCallback() {
           var input = document.createElement("input");
+          this.appendChild(input);
         }
       }
       wind.customElements.defin("range-slider", RangeSlider);
