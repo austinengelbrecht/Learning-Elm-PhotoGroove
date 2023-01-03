@@ -65,7 +65,7 @@ viewThumbnail selectedUrl thumb =
     img 
       [ src (urlPrefix ++ thumb.url)
       , title (thumb.title ++ " [" ++ String.fromInt thumb.size ++ " KB] ") 
-      , classList [ ( "selected", selectedUrl == Just thumb.url ) ]
+      , classList [ ( "selected", selectedUrl == thumb.url ) ]
       , onClick (ClickedPhoto thumb.url)
       ] 
       []
@@ -131,26 +131,14 @@ initialModel =
   }
 
 
-initialCmd : Cmd Msg
-initialCmd =
-  Http.get 
-    { url = "http://elm-in-action.com/photos/list.json"
-    , expect = Http.expectJson GotPhotos (list photoDecoder)
-    }
-
-
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
   case msg of
     GotRandomPhoto photo ->
-      ( { model | status = selectUrl photo.url model.status }
-      , Cmd.none
-      )
+      ( { model | status = selectUrl photo.url model.status }, Cmd.none )
 
     ClickedPhoto url ->
-      ({ model | status = selectUrl url model.status }
-      , Cmd.none
-      )
+      ({ model | status = selectUrl url model.status }, Cmd.none )
 
     ClickedSize size ->
       ({ model | chosenSize = size }, Cmd.none)
@@ -174,9 +162,7 @@ update msg model =
     GotPhotos (Ok photos) ->
       case photos of
         firstUrl :: rest ->
-          ( { model | status = Loaded photos first.url }
-          , Cmd.none
-          )
+          ( { model | status = Loaded photos first.url }, Cmd.none )
       
         [] ->
           ( { model | status = Errored "0 photos found" }, Cmd.none)
@@ -196,6 +182,15 @@ selectUrl url status =
 
     Errored errorMessage ->
       status
+
+
+initialCmd : Cmd Msg
+initialCmd =
+  Http.get 
+    { url = "http://elm-in-action.com/photos/list.json"
+    , expect = Http.expectJson GotPhotos (list photoDecoder)
+    }
+
 
 main : Program () Model Msg
 main = 
