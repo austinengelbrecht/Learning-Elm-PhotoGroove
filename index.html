@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>PhotoGroove</title>
 
     <style>
       body {
@@ -37,13 +37,57 @@
       }
     </style>
     <link rel="stylesheet" href="http://elm-in-action.com/styles.css" />
+
+    <link rel="stylesheet" href="http://elm-in-action.com/range-slider.css" />
+    <script src="http://elm-in-action.com/range-slider.js"></script>
+    <script>
+      class RangeSlider extends HTMLElement {
+        connectedCallback() {
+          let input = document.createElement("input");
+          this.appendChild(input);
+
+          let jsr = new JSR(input, {
+            max: this.max,
+            values: [this.val],
+            sliders: 1,
+            grid: false,
+          });
+
+          let rangeSliderNode = this;
+          jsr.addEventListener("update", function (elem, value) {
+            let event = new CustomEvent("slide", {
+              detail: { userSlidTo: value },
+            });
+
+            rangeSliderNode.dispatchEvent(event);
+          });
+        }
+      }
+      window.customElements.define("range-slider", RangeSlider);
+    </script>
   </head>
+
   <body>
     <div id="app"></div>
 
+    <script src="http://elm-in-action.com/pasta.js"></script>
     <script src="app.js"></script>
     <script>
-      Elm.PhotoGroove.init({ node: document.getElementById("app") });
+      var app = Elm.PhotoGroove.init({
+        node: document.getElementById("app"),
+        flags: Pasta.version,
+      });
+
+      app.ports.setFilters.subscribe(function (options) {
+        requestAnimationFrame(function () {
+          Pasta.apply(document.getElementById("main-canvas"), options);
+        });
+      });
+
+      Pasta.addActivityListener(function (activity) {
+        console.log("Got some activity: ", activity);
+        app.ports.activityChanges.send(activity);
+      });
     </script>
   </body>
 </html>
