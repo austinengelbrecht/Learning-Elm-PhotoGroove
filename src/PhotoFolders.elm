@@ -5,6 +5,7 @@ import Html exposing (..)
 import Html.Attributes exposing (class, src)
 import Html.Events exposing (onClick)
 
+import Dict exposing (Dict)
 import Http
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required)
@@ -14,11 +15,14 @@ import PhotoGroove exposing (urlPrefix)
 
 type alias Model = 
   { selectedPhotoUrl : Maybe String 
+  , photos : Dict String Photo
   }
 
 initialModel : Model
 initialModel =
-  { selectedPhotoUrl = Nothing }
+  { selectedPhotoUrl = Nothing 
+  , photos = Dict.empty 
+  }
 
 
 init : () -> ( Model, Cmd Msg )
@@ -74,7 +78,7 @@ main =
 type alias Photo =
   { title : String 
   , size : Int 
-  , reladedUrls : List String
+  , relatedUrls : List String
   , url : String 
   }
 
@@ -87,7 +91,7 @@ viewSelectedPhoto photo =
     , span [] [ text (String.fromInt photo.size ++ " KB") ]
     , h3 [] [ text "Related" ]
     , div [ class "related-photos" ]
-      (List.map viewRelatedPhoto photo.reladedUrls)
+      (List.map viewRelatedPhoto photo.relatedUrls)
     ]
 
 
