@@ -143,7 +143,12 @@ view model =
 
   in
   div [ class "content" ]
-    [ div [ class "selected-photo" ] [selectedPhoto] ]
+    [ div [ class "folders" ]
+      [ h1 [] [ text "Folders" ]
+      , viewFolder model.root
+      ]
+    , div [ class "selected-photo" ] [selectedPhoto] 
+    ]
 
 
 main : Program () Model Msg
@@ -185,6 +190,19 @@ viewRelatedPhoto url =
     , src (urlPrefix ++ "photos/" ++ url ++ "/thumb")
     ]
     []
+
+
+viewFolder : Folder -> Html Msg
+viewFolder (Folder folder) =
+  let
+    subfolders = 
+      List.map viewFolder folder.subfolders
+  in
+  div [ class "folder" ]
+    [ label [] [ text folder.name ]
+    , div [ class "subfolders" ] subfolders
+    ]
+  
 
 
 urlPrefix : String 
