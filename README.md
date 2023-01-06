@@ -7,4 +7,4 @@ ELM PhotoGroove is a practice project to learn elm and its concepts. This projec
 
 
 ## Compile ELM Code
-`elm make --output` 
+`elm make --output=app.js src/PhotoFolders.elm` 
