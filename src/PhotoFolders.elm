@@ -157,7 +157,7 @@ view model =
   div [ class "content" ]
     [ div [ class "folders" ]
       [ h1 [] [ text "Folders" ]
-      , viewFolder model.root
+      , viewFolder End model.root
       ]
     , div [ class "selected-photo" ] [selectedPhoto] 
     ]
