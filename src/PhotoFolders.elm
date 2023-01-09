@@ -249,11 +249,13 @@ finishPhoto (url, json) =
     }
   )
 
-fromPairs : List ( String, JsonPhoto ) -> ( String, Photo )
+
+fromPairs : List ( String, JsonPhoto ) -> Dict String Photo
 fromPairs pairs =
   pairs
     |> List.map finishPhoto 
     |> Dict.fromList 
+
 
 photosDecoder : Decoder (Dict String Photo)
 photosDecoder =
@@ -268,6 +270,7 @@ folderDecoder =
     |> required "photos" photosDecoder
     |> required "subfolders" (Decode.lazy ( \_ -> list folderDecoder))
 
+
 folderFromJson : String -> Dict String Photo -> List Folder -> Folder 
 folderFromJson name photos subfolders = 
   Folder 
@@ -277,12 +280,14 @@ folderFromJson name photos subfolders =
     , photoUrls = Dict.keys photos
     }
 
+
 modelPhotosDecoder : Decoder (Dict String Photo)
 modelPhotosDecoder =
   Decode.succeed modelPhotosFromJson 
     |> required "photos" photosDecoder 
     |> required "subfolders" (Decode.lazy (\_ -> list 
   modelPhotosDecoder))
+
 
 modelPhotosFromJson : Dict String Photo -> List (Dict String Photo) -> Dict String Photo
 modelPhotosFromJson folderPhotos subfolderPhotos =
