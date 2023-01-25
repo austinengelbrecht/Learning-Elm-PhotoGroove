@@ -6,15 +6,36 @@ import Html.Attributes exposing (classList, href)
 
 
 type alias Model =
-  {
+  { page : Page
   }
+
+
+type Page 
+  = Gallery 
+  | Folders 
+  | NotFound 
 
 
 view : Model -> Document Msg
 view model =
-    { title = "Photo Groove, SPA Style" 
-    , body = [ text "This isn't even my final form" ]
-    }
+  let
+    content = 
+      text "This isn't even my final form"
+
+  in 
+  { title = "Photo Groove, SPA Style" 
+    , body = 
+      [ viewHeader model.page 
+      , content 
+      , viewFooter
+      ]
+  }
+
+
+viewFooter : Html Msg 
+viewFooter = 
+  footer [] 
+    [ text "One is never alone with a rubber duck. -Douglas Adams" ]
 
 
 type Msg
@@ -34,7 +55,7 @@ subscriptions model =
 main : Program () Model Msg
 main =
   Browser.document
-    { init = \_ -> ( {}, Cmd.none)
+    { init = \_ -> ( page = Gallery, Cmd.none)
     , view = view
     , update = update
     , subscriptions = subscriptions
