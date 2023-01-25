@@ -38,13 +38,37 @@ viewFooter =
     [ text "One is never alone with a rubber duck. -Douglas Adams" ]
 
 
+viewHeader : Page -> Html Msg 
+viewHeader page =
+  let
+    logo = 
+      h1 [] [ text "Photo Groove"]
+    
+    links = 
+      ul [] 
+        [ navLink Folders { url = "/", caption = "Folders" }
+        , navLink Gallery { url = "/gallery", caption = "Gallery" }
+        ]
+
+    navLink : Page -> { url : String, caption : String } -> Html Msg 
+    navLink targetPage { url, caption } =
+      li [ classList [ ( "active", page == targetPage ) ] ]
+        [ a [ href url ] [ text caption ] ] 
+
+  in
+    nav []
+      [ logo
+      , links 
+      ]
+
+
 type Msg
   = NothingYet 
 
 
 update : Msg -> Model ->  ( Model, Cmd Msg )
 update msg model =
-  ( Model, Cmd.none )
+  ( model, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -55,7 +79,7 @@ subscriptions model =
 main : Program () Model Msg
 main =
   Browser.document
-    { init = \_ -> ( page = Gallery, Cmd.none)
+    { init = \_ -> ( { page = Gallery }, Cmd.none)
     , view = view
     , update = update
     , subscriptions = subscriptions
