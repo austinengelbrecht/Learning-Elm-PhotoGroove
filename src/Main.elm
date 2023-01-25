@@ -2,7 +2,7 @@ module Main exposing (..)
 
 import Browser exposing (Document)
 import Html exposing (Html, a, footer, h1, li, nav, text, ul)
-import Hmtl.Attributes exposing (classList, href)
+import Html.Attributes exposing (classList, href)
 
 
 type alias Model =
@@ -34,7 +34,7 @@ subscriptions model =
 main : Program () Model Msg
 main =
   Browser.document
-    { init = init
+    { init = \_ -> ( {}, Cmd.none)
     , view = view
     , update = update
     , subscriptions = subscriptions
