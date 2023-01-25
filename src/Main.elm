@@ -12,7 +12,7 @@ type alias Model =
 
 view : Model -> Document Msg
 view model =
-    { title = "Photo Groove, SPA Sytle" 
+    { title = "Photo Groove, SPA Style" 
     , body = [ text "This isn't even my final form" ]
     }
 
