@@ -7,10 +7,12 @@ import Html.Attributes exposing (classList, href)
 import Html.Lazy exposing (lazy)
 import Url exposing (Url)
 import Url.Parser as Parser exposing ((</>), Parser, s, string)
+import Browser exposing (UrlRequest(..))
 
 
 type alias Model =
   { page : Page
+  , key : Nav.Key 
   }
 
 
@@ -80,12 +82,28 @@ isActive { link, page } =
 
 
 type Msg
-  = NothingYet 
+  = ClickedLink Browser.UrlRequest 
+  | ChangedUrl Url  
+
+
+type UrlRequest
+  = External String 
+  | Internal Url 
 
 
 update : Msg -> Model ->  ( Model, Cmd Msg )
 update msg model =
-  ( model, Cmd.none )
+  case msg of 
+    ClickedLink urlRequest ->
+      case urlRequest of 
+        Browser.External href ->
+          ( model, Nav.load href )
+        
+        Browser.Internal url ->
+          (model, Nav.pushUrl model.key (Url.toString url) )
+        
+    ChangedUrl url ->
+      ( { model | page = urlToPage url }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -97,8 +115,8 @@ main : Program () Model Msg
 main =
   Browser.application
     { init = init
-    , onUrlRequest = \_ -> Debug.todo "handle URL request"
-    , onUrlChange = \_ -> Debug.todo "handle URL changes"
+    , onUrlRequest = ClickedLink
+    , onUrlChange = ChangedUrl
     , subscriptions = subscriptions 
     , view = view
     , update = update
@@ -107,7 +125,7 @@ main =
 
 init : () -> Url -> Nav.Key -> ( Model, Cmd Msg)
 init flags url key =
-  ( { page = urlToPage url }, Cmd.none )
+  ( { page = urlToPage url, key = key }, Cmd.none )
 
 
 urlToPage : Url -> Page
