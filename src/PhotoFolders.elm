@@ -1,6 +1,6 @@
 module PhotoFolders exposing (Model, Msg, init, update, view)
 
-import Browser 
+-- import Browser 
 import Html exposing (..)
 import Html.Attributes exposing (class, src)
 import Html.Events exposing (onClick)
@@ -9,8 +9,6 @@ import Dict exposing (Dict)
 import Http
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required)
-import PhotoGallery exposing (subscriptions)
-import PhotoGallery exposing (urlPrefix)
 
 
 type Folder = 
@@ -35,9 +33,9 @@ initialModel =
   }
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-  ( initialModel
+init : Maybe String -> ( Model, Cmd Msg )
+init selectedFilename =
+  ( { initialModel | selectedPhotoUrl = selectedFilename }
   , Http.get
       { url = "http://elm-in-action.com/folders/list"
       , expect = Http.expectJson GotInitialModel modelDecoder
@@ -104,14 +102,14 @@ view model =
     ]
 
 
-main : Program () Model Msg
-main =
-  Browser.element
-    { init = init
-    , view = view
-    , update = update 
-    , subscriptions = \_ -> Sub.none
-    }
+-- main : Program () Model Msg
+-- main =
+--   Browser.element
+--     { init = init
+--     , view = view
+--     , update = update 
+--     , subscriptions = \_ -> Sub.none
+--     }
 
 
 
