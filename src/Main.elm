@@ -21,8 +21,8 @@ type alias Model =
 
 
 type Page 
-  = Gallery Gallery.Model 
-  | Folders Folders.Model 
+  = GalleryPage Gallery.Model 
+  | FoldersPage Folders.Model 
   | NotFound 
 
 
@@ -134,7 +134,7 @@ update msg model =
     
     GotGalleryMsg galleryMsg ->
       case model.page of 
-        GalleryMsg gallery ->
+        GalleryPage gallery ->
           toGallery model (Gallery.update galleryMsg gallery)
         
         _ ->
