@@ -1,4 +1,4 @@
-port module PhotoGallery exposing (init, Model, Msg, init, update, view)
+port module PhotoGallery exposing (Model, Msg, init, update, view)
 
 import Browser
 import Html exposing (..)
