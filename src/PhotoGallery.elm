@@ -1,10 +1,9 @@
-port module PhotoGroove exposing (..)
+port module PhotoGallery exposing (Model, Msg, init, subscriptions, update, view)
 
 import Browser
 import Html exposing (..)
 import Html.Attributes as Attr exposing (class, classList, id, name, src, title, type_)
 import Html.Events exposing (onClick, on)
-import Array exposing (Array)
 import Random
 import Http
 import Json.Encode as Encode
