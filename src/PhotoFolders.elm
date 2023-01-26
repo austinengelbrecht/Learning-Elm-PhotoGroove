@@ -1,4 +1,4 @@
-module PhotoFolders exposing (main)
+module PhotoFolders exposing (Model, Msg, init, update, view)
 
 import Browser 
 import Html exposing (..)
@@ -9,8 +9,8 @@ import Dict exposing (Dict)
 import Http
 import Json.Decode as Decode exposing (Decoder, int, list, string)
 import Json.Decode.Pipeline exposing (required)
-import PhotoGroove exposing (subscriptions)
-import PhotoGroove exposing (urlPrefix)
+import PhotoGallery exposing (subscriptions)
+import PhotoGallery exposing (urlPrefix)
 
 
 type Folder = 

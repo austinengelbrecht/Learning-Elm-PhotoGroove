@@ -1,5 +1,8 @@
 module Main exposing (..)
 
+import PhotoFolders as Folders 
+import PhotoGallery as Gallery
+
 import Browser exposing (Document)
 import Browser.Navigation as Nav
 import Html exposing (Html, a, footer, h1, li, nav, text, ul)
@@ -17,11 +20,16 @@ type alias Model =
 
 
 type Page 
-  = SelectedPhoto String 
-  | Gallery 
-  | Folders 
+  = Gallery Gallery.Model 
+  | Folders Folders.Model 
   | NotFound 
 
+
+type Route 
+  = Gallery 
+  | Folders 
+  | SelectedPhoto String 
+  
 
 view : Model -> Document Msg
 view model =
