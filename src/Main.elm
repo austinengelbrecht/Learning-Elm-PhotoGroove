@@ -179,7 +179,7 @@ main =
 
 
 init : Float -> Url -> Nav.Key -> ( Model, Cmd Msg)
-init flags url key =
+init version url key =
   updateUrl url { page = NotFound, key = key, version = version }
 
 
@@ -202,7 +202,7 @@ updateUrl url model =
       ( { model | page = NotFound }, Cmd.none )
 
 
-parser : Parser (Page -> a) a
+parser : Parser (Route -> a) a
 parser = 
   Parser.oneOf 
     [ Parser.map Folders Parser.top 
